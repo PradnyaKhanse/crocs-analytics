@@ -1,0 +1,10 @@
+﻿pandas
+matplotlib
+seaborn
+yfinance
+pytrends
+vaderSentiment
+requests
+feedparser
+streamlit
+plotly
