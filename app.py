@@ -810,39 +810,37 @@ with tab_events:
     
     col_e1, col_e2 = st.columns([3, 2])
     with col_e1:
-        table_html = """
-        <div style="background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04); margin-bottom: 12px;">
-            <table style="width: 100%; border-collapse: collapse; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px;">
-                <thead>
-                    <tr style="background: #F8FAFC; border-bottom: 2px solid #E2E8F0; text-align: left;">
-                        <th style="padding: 10px 12px; color: #475569; font-weight: 700; font-size: 12px;">Date</th>
-                        <th style="padding: 10px 12px; color: #475569; font-weight: 700; font-size: 12px;">Milestone</th>
-                        <th style="padding: 10px 12px; color: #475569; font-weight: 700; font-size: 12px;">Price</th>
-                        <th style="padding: 10px 12px; color: #475569; font-weight: 700; font-size: 12px;">R30</th>
-                        <th style="padding: 10px 12px; color: #475569; font-weight: 700; font-size: 12px;">R90</th>
-                        <th style="padding: 10px 12px; color: #475569; font-weight: 700; font-size: 12px;">Verdict</th>
-                    </tr>
-                </thead>
-                <tbody>
-        """
+        rows_html = ""
         for r in event_study_data:
             r30_col = "#059669" if "+" in r['R30'] else "#DC2626"
             r90_col = "#059669" if "+" in r['R90'] else "#DC2626"
-            table_html += f"""
-                    <tr style="border-bottom: 1px solid #F1F5F9; color: #0F172A;">
-                        <td style="padding: 9px 12px; font-weight: 600; color: #64748B; font-size: 12px;">{r['Date']}</td>
-                        <td style="padding: 9px 12px; font-weight: 700; color: #0F172A; font-size: 12.5px;">{r['Milestone']}</td>
-                        <td style="padding: 9px 12px; font-weight: 600; color: #334155;">${r['Price']:.2f}</td>
-                        <td style="padding: 9px 12px; font-weight: 700; color: {r30_col};">{r['R30']}</td>
-                        <td style="padding: 9px 12px; font-weight: 700; color: {r90_col};">{r['R90']}</td>
-                        <td style="padding: 9px 12px; font-size: 11.5px; color: #64748B;">{r['Verdict']}</td>
-                    </tr>
-            """
-        table_html += """
-                </tbody>
-            </table>
-        </div>
-        """
+            rows_html += (
+                f'<tr style="border-bottom:1px solid #F1F5F9; color:#0F172A;">'
+                f'<td style="padding:9px 12px; font-weight:600; color:#64748B; font-size:12px;">{r["Date"]}</td>'
+                f'<td style="padding:9px 12px; font-weight:700; color:#0F172A; font-size:12.5px;">{r["Milestone"]}</td>'
+                f'<td style="padding:9px 12px; font-weight:600; color:#334155;">${r["Price"]:.2f}</td>'
+                f'<td style="padding:9px 12px; font-weight:700; color:{r30_col};">{r["R30"]}</td>'
+                f'<td style="padding:9px 12px; font-weight:700; color:{r90_col};">{r["R90"]}</td>'
+                f'<td style="padding:9px 12px; font-size:11.5px; color:#64748B;">{r["Verdict"]}</td>'
+                f'</tr>'
+            )
+        table_html = (
+            '<div style="background:#FFFFFF; border:1.5px solid #E2E8F0; border-radius:18px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.04); margin-bottom:12px;">'
+            '<table style="width:100%; border-collapse:collapse; font-family:\'Plus Jakarta Sans\', sans-serif; font-size:13px;">'
+            '<thead>'
+            '<tr style="background:#F8FAFC; border-bottom:2px solid #E2E8F0; text-align:left;">'
+            '<th style="padding:10px 12px; color:#475569; font-weight:700; font-size:12px;">Date</th>'
+            '<th style="padding:10px 12px; color:#475569; font-weight:700; font-size:12px;">Milestone</th>'
+            '<th style="padding:10px 12px; color:#475569; font-weight:700; font-size:12px;">Price</th>'
+            '<th style="padding:10px 12px; color:#475569; font-weight:700; font-size:12px;">R30</th>'
+            '<th style="padding:10px 12px; color:#475569; font-weight:700; font-size:12px;">R90</th>'
+            '<th style="padding:10px 12px; color:#475569; font-weight:700; font-size:12px;">Verdict</th>'
+            '</tr>'
+            '</thead>'
+            f'<tbody>{rows_html}</tbody>'
+            '</table>'
+            '</div>'
+        )
         st.markdown(table_html, unsafe_allow_html=True)
     with col_e2:
         fig_es_bar = go.Figure(data=[
