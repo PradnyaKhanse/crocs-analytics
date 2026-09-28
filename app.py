@@ -1,10 +1,28 @@
 import os
+import pathlib
 import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime
+
+# -----------------------------------------------------------------------------
+# AUTO-ENFORCE STREAMLIT LIGHT THEME CONFIG
+# -----------------------------------------------------------------------------
+try:
+    for c_dir in [pathlib.Path.home() / ".streamlit", pathlib.Path(os.getcwd()) / ".streamlit", pathlib.Path(__file__).parent / ".streamlit"]:
+        c_dir.mkdir(parents=True, exist_ok=True)
+        (c_dir / "config.toml").write_text("""[theme]
+base = "light"
+primaryColor = "#8B5CF6"
+backgroundColor = "#FDF2F8"
+secondaryBackgroundColor = "#FAF5FF"
+textColor = "#1E293B"
+font = "sans serif"
+""")
+except Exception:
+    pass
 
 # -----------------------------------------------------------------------------
 # PAGE CONFIGURATION & METADATA
@@ -78,12 +96,67 @@ st.markdown(f"""
         font-size: 13px !important;
     }}
     
-    [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] {{
-        background: rgba(255, 255, 255, 0.85) !important;
-        border: 1px solid rgba(255, 255, 255, 0.95) !important;
+    /* All Selectboxes (Sidebar & Main) */
+    .stSelectbox div[data-baseweb="select"],
+    .stSelectbox div[data-baseweb="select"] > div,
+    [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"],
+    [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] > div {{
+        background: rgba(255, 255, 255, 0.92) !important;
+        background-color: rgba(255, 255, 255, 0.92) !important;
+        border: 1px solid rgba(226, 232, 240, 0.95) !important;
         color: #1E293B !important;
         border-radius: 16px !important;
         box-shadow: 0 4px 15px rgba(147, 112, 219, 0.08) !important;
+    }}
+    
+    .stSelectbox div[data-baseweb="select"] *,
+    [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] * {{
+        color: #1E293B !important;
+        fill: #1E293B !important;
+    }}
+    
+    /* Dropdown Popover Menu (prevents black dropdown background) */
+    div[data-baseweb="popover"],
+    div[data-baseweb="popover"] > div,
+    div[data-baseweb="menu"],
+    ul[data-baseweb="menu"],
+    ul[role="listbox"] {{
+        background: #FFFFFF !important;
+        background-color: #FFFFFF !important;
+        border: 1px solid rgba(226, 232, 240, 0.95) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 12px 32px rgba(99, 102, 241, 0.15) !important;
+    }}
+    
+    li[role="option"],
+    li[data-baseweb="menu-item"] {{
+        background: transparent !important;
+        background-color: transparent !important;
+        color: #1E293B !important;
+        font-weight: 600 !important;
+        border-radius: 10px !important;
+        padding: 8px 14px !important;
+    }}
+    
+    li[role="option"] *,
+    li[data-baseweb="menu-item"] * {{
+        color: #1E293B !important;
+    }}
+    
+    li[role="option"]:hover,
+    li[data-baseweb="menu-item"]:hover,
+    li[role="option"][aria-selected="true"],
+    li[data-baseweb="menu-item"][aria-selected="true"] {{
+        background: rgba(243, 232, 255, 0.85) !important;
+        background-color: rgba(243, 232, 255, 0.85) !important;
+        color: #6B21A8 !important;
+    }}
+    
+    li[role="option"]:hover *,
+    li[data-baseweb="menu-item"]:hover *,
+    li[role="option"][aria-selected="true"] *,
+    li[data-baseweb="menu-item"][aria-selected="true"] * {{
+        color: #6B21A8 !important;
     }}
     
     /* Floating Frosted Glass Hero Banner */
@@ -211,47 +284,102 @@ st.markdown(f"""
     
     /* Sleek Frosted Pill Navigation Tabs */
     .stTabs [data-baseweb="tab-list"] {{
-        background: rgba(255, 255, 255, 0.6) !important;
+        background: rgba(255, 255, 255, 0.8) !important;
         backdrop-filter: blur(20px) saturate(180%) !important;
         -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
         padding: 6px 8px;
         border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.85);
+        border: 1px solid rgba(226, 232, 240, 0.95);
         box-shadow: 0 6px 20px rgba(168, 85, 247, 0.06);
         gap: 6px;
     }}
     
-    .stTabs [data-baseweb="tab"] {{
-        color: #64748B !important;
-        border-radius: 14px !important;
-        padding: 8px 18px !important;
-        font-weight: 600 !important;
+    .stTabs [data-baseweb="tab"],
+    .stTabs [data-baseweb="tab"] *,
+    .stTabs [data-baseweb="tab"] p,
+    .stTabs [data-baseweb="tab"] div,
+    .stTabs [data-baseweb="tab"] span {{
+        color: #0F172A !important;
+        -webkit-text-fill-color: #0F172A !important;
+        font-weight: 700 !important;
         font-size: 13.5px !important;
         border: none !important;
-        background: transparent !important;
         transition: all 0.2s ease !important;
     }}
     
-    .stTabs [data-baseweb="tab"]:hover {{
-        color: #5B21B6 !important;
-        background: rgba(255, 255, 255, 0.5) !important;
+    .stTabs [data-baseweb="tab"] {{
+        border-radius: 14px !important;
+        padding: 8px 18px !important;
+        background: transparent !important;
     }}
     
-    .stTabs [aria-selected="true"] {{
-        background: linear-gradient(135deg, #FFFFFF 0%, rgba(238, 242, 255, 0.95) 100%) !important;
-        color: #4F46E5 !important;
+    .stTabs [data-baseweb="tab"]:hover,
+    .stTabs [data-baseweb="tab"]:hover *,
+    .stTabs [data-baseweb="tab"]:hover p {{
+        color: #6D28D9 !important;
+        -webkit-text-fill-color: #6D28D9 !important;
+        background: rgba(243, 232, 255, 0.6) !important;
+    }}
+    
+    .stTabs [aria-selected="true"],
+    .stTabs button[aria-selected="true"] {{
+        background: #FFFFFF !important;
+        border: 1.5px solid rgba(199, 210, 254, 0.95) !important;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.18) !important;
+        border-radius: 14px !important;
+    }}
+    
+    .stTabs [aria-selected="true"],
+    .stTabs [aria-selected="true"] *,
+    .stTabs [aria-selected="true"] p,
+    .stTabs [aria-selected="true"] div,
+    .stTabs [aria-selected="true"] span {{
+        color: #4338CA !important;
+        -webkit-text-fill-color: #4338CA !important;
         font-weight: 800 !important;
-        border: 1px solid rgba(255, 255, 255, 0.95) !important;
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15) !important;
     }}
     
-    /* Frosted Glass Dataframe */
-    [data-testid="stDataFrame"] {{
-        background: rgba(255, 255, 255, 0.75) !important;
+    /* Eliminate black overflow button on tabs */
+    .stTabs button:not([data-baseweb="tab"]) {{
+        background: #FFFFFF !important;
+        color: #0F172A !important;
+        border-radius: 12px !important;
+        border: 1px solid #CBD5E1 !important;
+    }}
+    .stTabs button:not([data-baseweb="tab"]) svg {{
+        fill: #0F172A !important;
+        color: #0F172A !important;
+    }}
+    .stTabs [data-baseweb="tab-highlight"] {{
+        background-color: #8B5CF6 !important;
+    }}
+    .stTabs [data-baseweb="tab-border"] {{
+        background-color: transparent !important;
+    }}
+    
+    /* Radio Buttons & Labels - Force Solid Dark Black */
+    div[data-testid="stRadio"] label,
+    div[data-testid="stRadio"] label *,
+    div[data-testid="stRadio"] p,
+    div[data-testid="stRadio"] span,
+    div[data-testid="stRadio"] div {{
+        color: #0F172A !important;
+        -webkit-text-fill-color: #0F172A !important;
+        font-weight: 700 !important;
+        font-size: 13.5px !important;
+    }}
+    
+    /* Frosted Glass Dataframe / Table Container */
+    [data-testid="stDataFrame"],
+    [data-testid="stDataFrame"] > div,
+    [data-testid="stTable"] {{
+        background: #FFFFFF !important;
+        background-color: #FFFFFF !important;
         border-radius: 20px !important;
-        border: 1px solid rgba(255, 255, 255, 0.9) !important;
-        padding: 10px !important;
-        box-shadow: 0 6px 20px rgba(168, 85, 247, 0.06) !important;
+        border: 1px solid rgba(226, 232, 240, 0.95) !important;
+        padding: 8px !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05) !important;
+        color: #0F172A !important;
     }}
     
     /* Download Button */
@@ -271,7 +399,8 @@ st.markdown(f"""
     }}
     
     .stCheckbox label span {{
-        color: #334155 !important;
+        color: #0F172A !important;
+        -webkit-text-fill-color: #0F172A !important;
         font-weight: 600 !important;
     }}
 </style>
@@ -681,7 +810,40 @@ with tab_events:
     
     col_e1, col_e2 = st.columns([3, 2])
     with col_e1:
-        st.dataframe(es_df, use_container_width=True, hide_index=True)
+        table_html = """
+        <div style="background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04); margin-bottom: 12px;">
+            <table style="width: 100%; border-collapse: collapse; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px;">
+                <thead>
+                    <tr style="background: #F8FAFC; border-bottom: 2px solid #E2E8F0; text-align: left;">
+                        <th style="padding: 10px 12px; color: #475569; font-weight: 700; font-size: 12px;">Date</th>
+                        <th style="padding: 10px 12px; color: #475569; font-weight: 700; font-size: 12px;">Milestone</th>
+                        <th style="padding: 10px 12px; color: #475569; font-weight: 700; font-size: 12px;">Price</th>
+                        <th style="padding: 10px 12px; color: #475569; font-weight: 700; font-size: 12px;">R30</th>
+                        <th style="padding: 10px 12px; color: #475569; font-weight: 700; font-size: 12px;">R90</th>
+                        <th style="padding: 10px 12px; color: #475569; font-weight: 700; font-size: 12px;">Verdict</th>
+                    </tr>
+                </thead>
+                <tbody>
+        """
+        for r in event_study_data:
+            r30_col = "#059669" if "+" in r['R30'] else "#DC2626"
+            r90_col = "#059669" if "+" in r['R90'] else "#DC2626"
+            table_html += f"""
+                    <tr style="border-bottom: 1px solid #F1F5F9; color: #0F172A;">
+                        <td style="padding: 9px 12px; font-weight: 600; color: #64748B; font-size: 12px;">{r['Date']}</td>
+                        <td style="padding: 9px 12px; font-weight: 700; color: #0F172A; font-size: 12.5px;">{r['Milestone']}</td>
+                        <td style="padding: 9px 12px; font-weight: 600; color: #334155;">${r['Price']:.2f}</td>
+                        <td style="padding: 9px 12px; font-weight: 700; color: {r30_col};">{r['R30']}</td>
+                        <td style="padding: 9px 12px; font-weight: 700; color: {r90_col};">{r['R90']}</td>
+                        <td style="padding: 9px 12px; font-size: 11.5px; color: #64748B;">{r['Verdict']}</td>
+                    </tr>
+            """
+        table_html += """
+                </tbody>
+            </table>
+        </div>
+        """
+        st.markdown(table_html, unsafe_allow_html=True)
     with col_e2:
         fig_es_bar = go.Figure(data=[
             go.Bar(name='30-Day Return', x=es_df['Milestone'], y=[5.2, -1.9, 40.0, 2.5, 28.6, 13.5], marker_color='#C084FC'),
